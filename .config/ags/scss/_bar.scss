@@ -19,6 +19,10 @@ $bar_subgroup_bg: $surfaceVariant;
 .bar-bg {
     background-color: $t_background;
     min-height: 2.727rem;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    @include small-rounding;
 }
 
 .bar-bg-focus {
@@ -262,6 +266,7 @@ $bar_subgroup_bg: $surfaceVariant;
     min-height: $rounding_large;
 }
 
+/*
 .corner {
     background-color: $t_background;
     @include large-rounding;
@@ -271,7 +276,7 @@ $bar_subgroup_bg: $surfaceVariant;
     background-color: $black; // Hard code: fake screen corner
     @include large-rounding;
 }
-
+*/
 .bar-topdesc {
     margin-top: -0.136rem;
     margin-bottom: -0.341rem;
