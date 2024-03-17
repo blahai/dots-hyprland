@@ -20,14 +20,6 @@ import { widgetContent } from './sideleft.js';
 const EXPAND_INPUT_THRESHOLD = 30;
 const APIS = [
     {
-        name: 'Waifus',
-        sendCommand: waifuSendMessage,
-        contentWidget: waifuView,
-        commandBar: waifuCommands,
-        tabIcon: waifuTabIcon,
-        placeholderText: 'Enter tags',
-    },  
-    {
         name: 'Assistant (Gemini Pro)',
         sendCommand: geminiSendMessage,
         contentWidget: geminiView,
@@ -43,7 +35,15 @@ const APIS = [
         tabIcon: chatGPTTabIcon,
         placeholderText: 'Message the model...',
     },
-        {
+    {
+        name: 'Waifus',
+        sendCommand: waifuSendMessage,
+        contentWidget: waifuView,
+        commandBar: waifuCommands,
+        tabIcon: waifuTabIcon,
+        placeholderText: 'Enter tags',
+    },
+    {
         name: 'Booru',
         sendCommand: booruSendMessage,
         contentWidget: booruView,
