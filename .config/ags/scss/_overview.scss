@@ -116,22 +116,24 @@
 .overview-tasks-window {
     @include normal-rounding;
     @include menu_decel;
-    background-color: transparentize($layer3, 0.2);
+    background-color: $layer2;
     color: $onSurface;
     border: 0.068rem solid $surfaceContainerHighest;
 }
 
 .overview-tasks-window:hover,
 .overview-tasks-window:focus {
-    background-color: transparentize($secondaryContainer, 0.3);
+    background-color: $secondaryContainer;
 }
 
 .overview-tasks-window:active {
-    background-color: transparentize($secondaryContainer, 0.3);
+    background-color: $tertiaryContainer;
+    background-color: mix($secondaryContainer, $hovercolor, 70%);
 }
 
 .overview-tasks-window-selected {
-    background-color: transparentize($secondaryContainer, 0.3);
+    background-color: $tertiaryContainer;
+    background-color: mix($secondaryContainer, $hovercolor, 70%);
 }
 
 .overview-tasks-window-dragging {

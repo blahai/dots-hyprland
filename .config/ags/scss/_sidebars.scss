@@ -260,7 +260,7 @@ $sidebar_chat_textboxareaColor: mix($onSurfaceVariant, $surfaceVariant, 40%);
     @include full-rounding;
     @include element_decel;
     padding: 0rem 0.682rem;
-    background-color: $layer2;
+    background-color: $surfaceContainerHigh;
     color: $onSurface;
 }
 
@@ -278,7 +278,7 @@ $sidebar_chat_textboxareaColor: mix($onSurfaceVariant, $surfaceVariant, 40%);
     @include element_decel;
     min-width: 2.045rem;
     min-height: 2.045rem;
-    background-color: $layer2;
+    background-color: $surfaceContainerHigh;
     color: $outline;
 }
 
@@ -326,7 +326,7 @@ $sidebar_chat_textboxareaColor: mix($onSurfaceVariant, $surfaceVariant, 40%);
 .sidebar-todo-new {
     @include full-rounding;
     @include element_decel;
-    background-color: $layer2;
+    background-color: $surfaceContainerHigh;
     color: $onSurfaceVariant;
     margin: 0.341rem;
     padding: 0.205rem 0.545rem;
@@ -492,10 +492,24 @@ $colorpicker_rounding: 0.341rem;
     padding: 0.341rem;
 }
 
-.sidebar-icontabswitcher {
+.sidebar-chat-apiswitcher {
     @include full-rounding;
     @include group-padding;
     background-color: $layer1;
+}
+
+.sidebar-chat-apiswitcher-icon {
+    @include element_decel;
+    @include full-rounding;
+    min-width: 2.182rem;
+    min-height: 2.182rem;
+    font-size: 1.406rem;
+    color: $onSurface;
+}
+
+.sidebar-chat-apiswitcher-icon-enabled {
+    background-color: $secondaryContainer;
+    color: $onSecondaryContainer;
 }
 
 .sidebar-chat-providerswitcher {
@@ -517,7 +531,7 @@ $colorpicker_rounding: 0.341rem;
 
 .sidebar-chat-textarea {
     @include normal-rounding;
-    background-color: $layer1;
+    background-color: $surfaceContainerHigh;
     color: $onSurfaceVariant;
     padding: 0.682rem;
 }
@@ -626,6 +640,7 @@ $colorpicker_rounding: 0.341rem;
     @include small-rounding;
     margin: 0rem 0.682rem;
     padding: 0.682rem;
+
     color: $onBackground;
 }
 
@@ -709,7 +724,7 @@ $colorpicker_rounding: 0.341rem;
 
 .sidebar-chat-chip-action {
     @include element_decel;
-    background-color: $layer2;
+    background-color: $surfaceContainerHigh;
     color: $onSurfaceVariant;
 }
 
@@ -731,7 +746,7 @@ $colorpicker_rounding: 0.341rem;
     @include element_decel;
     @include small-rounding;
     padding: 0.341rem 0.477rem;
-    background-color: $layer3;
+    background-color: $surfaceContainerHigh;
     color: $onSurfaceVariant;
 }
 
@@ -786,7 +801,7 @@ $colorpicker_rounding: 0.341rem;
 }
 
 .sidebar-waifu-txt {
-    @include mainfont;
+    @include readingfont;
 }
 
 .sidebar-waifu-image {
@@ -844,44 +859,4 @@ $waifu_image_overlay_transparency: 0.7;
     // background-color: rgba(100, 100, 0, 0.3);
     @include element_decel;
     margin: 0.545rem;
-}
-
-.sidebar-volmixer-stream {
-    // @include normal-rounding;
-    // background-color: $layer2;
-    // color: $onLayer2;
-    border-bottom: 0.068rem solid $outlineVariant;
-    padding: 0.682rem;
-    color: $onSurface;
-}
-
-.sidebar-volmixer-stream-appicon {
-    font-size: 3.273rem;
-}
-
-.sidebar-volmixer-stream-slider {
-    trough {
-        border-radius: $rounding_verysmall;
-        min-height: 1.364rem;
-        min-width: 1.364rem;
-        background-color: $secondaryContainer;
-    }
-
-    highlight {
-        border-radius: $rounding_verysmall;
-        min-height: 1.364rem;
-        min-width: 1.364rem;
-        background-color: $primary;
-    }
-
-    slider {
-        border-radius: $rounding_verysmall;
-        min-height: 1.364rem;
-        min-width: 1.364rem;
-    }
-}
-
-.sidebar-volmixer-status {
-    color: $onSurface;
-    margin: 0rem 0.682rem;
 }

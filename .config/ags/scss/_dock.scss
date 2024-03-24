@@ -12,11 +12,11 @@
 
 .dock-app-btn:hover,
 .dock-app-btn:focus {
-    background-color: $layer0Hover;
+    background-color: mix($surface, $onSurface, 90%);
 }
 
 .dock-app-btn:active {
-    background-color: $layer0Active;
+    background-color: mix($surface, $onSurface, 85%);
 }
 
 .dock-app-icon {
@@ -27,5 +27,5 @@
 
 .dock-separator {
     min-width: 0.068rem;
-    background-color: $outline;
+    background-color: $surfaceVariant;
 }

@@ -16,6 +16,7 @@ const MODEL_NAME = `Gemini`;
 
 export const geminiTabIcon = Icon({
     hpack: 'center',
+    className: 'sidebar-chat-apiswitcher-icon',
     icon: `google-gemini-symbolic`,
 })
 
@@ -88,7 +89,7 @@ export const GeminiSettings = () => MarginRevealer({
                     GeminiService.temperature = value;
                 },
             }),
-            ConfigGap({ vertical: true, size: 10 }), // Note: size can only be 5, 10, or 15
+            ConfigGap({ vertical: true, size: 10 }), // Note: size can only be 5, 10, or 15 
             Box({
                 vertical: true,
                 hpack: 'fill',
@@ -101,24 +102,6 @@ export const GeminiSettings = () => MarginRevealer({
                         initValue: GeminiService.assistantPrompt,
                         onChange: (self, newValue) => {
                             GeminiService.assistantPrompt = newValue;
-                        },
-                    }),
-                    ConfigToggle({
-                        icon: 'shield',
-                        name: 'Safety',
-                        desc: 'When turned off, tells the API (not the model) \nto not block harmful/explicit content',
-                        initValue: GeminiService.safe,
-                        onChange: (self, newValue) => {
-                            GeminiService.safe = newValue;
-                        },
-                    }),
-                    ConfigToggle({
-                        icon: 'history',
-                        name: 'History',
-                        desc: 'Saves chat history\nMessages in previous chats won\'t show automatically, but they are there',
-                        initValue: GeminiService.useHistory,
-                        onChange: (self, newValue) => {
-                            GeminiService.useHistory = newValue;
                         },
                     }),
                 ]
@@ -218,10 +201,6 @@ export const sendMessage = (text) => {
     // Commands
     if (text.startsWith('/')) {
         if (text.startsWith('/clear')) clearChat();
-        else if (text.startsWith('/load')) {
-            clearChat();
-            GeminiService.loadHistory();
-        }
         else if (text.startsWith('/model')) chatContent.add(SystemMessage(`Currently using \`${GeminiService.modelName}\``, '/model', geminiView))
         else if (text.startsWith('/prompt')) {
             const firstSpaceIndex = text.indexOf(' ');
@@ -278,10 +257,10 @@ export const geminiView = Box({
             })
             // Always scroll to bottom with new content
             const adjustment = scrolledWindow.get_vadjustment();
-            adjustment.connect("changed", () => Utils.timeout(1, () => {
+            adjustment.connect("changed", () => {
                 if(!chatEntry.hasFocus) return;
                 adjustment.set_value(adjustment.get_upper() - adjustment.get_page_size());
-            }))
+            })
         }
     })]
 });

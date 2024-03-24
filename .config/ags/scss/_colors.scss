@@ -1,5 +1,6 @@
-$rootTransparency: 0.31; // Transparency = 1 - opacity
-$transparency: 0.8;
+$transparency: 0.5;
+$transparentize_amount: 0.3;
+$transparentize_surface_amount: 0.7;
 
 // Extended material
 $success: #4f6354;
@@ -16,8 +17,10 @@ $onSuccessContainer: #0c1f13;
 }
 
 // Transparent versions
+$t_surface: transparentize($surface, $transparentize_surface_amount);
+
 @if $transparent == True {
-  $background: transparentize($background, $rootTransparency);
+  $background: transparentize($background, $transparency);
   $surface: transparentize($surface, $transparency);
   $surfaceDim: transparentize($surfaceDim, $transparency);
   $surfaceBright: transparentize($surfaceBright, $transparency);
