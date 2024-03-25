@@ -7,6 +7,8 @@ let configOptions = {
     'ai': {
         'defaultGPTProvider': "openai",
         'defaultTemperature': 0.9,
+        'enhancements': true,
+        'useHistory': true,
         'writingCursor': " ...", // Warning: Using weird characters can mess up Markdown rendering
     },
     'animations': {
@@ -38,6 +40,7 @@ let configOptions = {
     'sidebar': {
         'imageColumns': 2,
         'imageBooruCount': 20,
+        'imageAllowNsfw': false,
     },
     'search': {
         'engineBaseUrl': "https://www.google.com/search?q=",
@@ -84,6 +87,10 @@ let configOptions = {
         },
         'sidebar': {
             'apis': {
+                'nextTab': "Page_Down",
+                'prevTab': "Page_Up",
+            },
+            'options': { // Right sidebar
                 'nextTab': "Page_Down",
                 'prevTab': "Page_Up",
             },
