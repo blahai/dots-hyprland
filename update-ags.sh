@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
-# This script showed one reason about why it's good to split functions and installers in another file.
-#
-# This script is for install/update ags itself, NOT the config for it.
-# The install.sh will install ags for you, why you still need this?
-# Because you may run this script to ONLY update ags, since ags is a very active project currently and updates frequently.
-#
-cd "$(dirname "$0")"
-export base="$(pwd)"
-source ./scriptdata/functions
-source ./scriptdata/installers
-
-install-ags
+mkdir -p ./cache/ags
+cd ./cache/ags
+git init -b main
+git remote add origin https://github.com/Aylur/ags.git
+git pull origin main && git submodule --init --recursive
+git checkout f905abfd2210701929ffaa3db13faa783b782765 # "update examples"
+npm install
+meson setup build
+meson install -C build
