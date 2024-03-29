@@ -5,10 +5,6 @@ const { Box, Button, CenterBox, Entry, EventBox, Icon, Label, Overlay, Revealer,
 const { execAsync, exec } = Utils;
 import { setupCursorHover, setupCursorHoverInfo } from '../.widgetutils/cursorhover.js';
 // APIs
-import GPTService from '../../services/gpt.js';
-import Gemini from '../../services/gemini.js';
-import { geminiView, geminiCommands, sendMessage as geminiSendMessage, geminiTabIcon } from './apis/gemini.js';
-import { chatGPTView, chatGPTCommands, sendMessage as chatGPTSendMessage, chatGPTTabIcon } from './apis/chatgpt.js';
 import { waifuView, waifuCommands, sendMessage as waifuSendMessage, waifuTabIcon } from './apis/waifu.js';
 import { booruView, booruCommands, sendMessage as booruSendMessage, booruTabIcon } from './apis/booru.js';
 import { enableClickthrough } from "../.widgetutils/clickthrough.js";
@@ -64,14 +60,6 @@ export const chatEntry = TextView({
                 self.grab_focus();
             }
         })
-        .hook(GPTService, (self) => {
-            if (APIS[currentApiId].name != 'Assistant (GPTs)') return;
-            self.placeholderText = (GPTService.key.length > 0 ? 'Message the model...' : 'Enter API Key...');
-        }, 'hasKey')
-        .hook(Gemini, (self) => {
-            if (APIS[currentApiId].name != 'Assistant (Gemini Pro)') return;
-            self.placeholderText = (Gemini.key.length > 0 ? 'Message Gemini...' : 'Enter Google AI API Key...');
-        }, 'hasKey')
         .on("key-press-event", (widget, event) => {
             // Don't send when Shift+Enter
             if (event.get_keyval()[1] === Gdk.KEY_Return && event.get_state()[1] == Gdk.ModifierType.MOD2_MASK) {

@@ -4,13 +4,6 @@ import userOverrides from '../../user_options.js';
 // Defaults
 let configOptions = {
     // General stuff
-    'ai': {
-        'defaultGPTProvider': "openai",
-        'defaultTemperature': 0.9,
-        'enhancements': true,
-        'useHistory': true,
-        'writingCursor': " ...", // Warning: Using weird characters can mess up Markdown rendering
-    },
     'animations': {
         'choreographyDelay': 35,
         'durationSmall': 110,
