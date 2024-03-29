@@ -12,7 +12,7 @@ import { ConfigToggle } from '../../.commonwidgets/configwidgets.js';
 
 // can't connect: sync_problem
 
-const USE_SYMBOLIC_ICONS = false;
+const USE_SYMBOLIC_ICONS = true;
 
 const BluetoothDevice = (device) => {
     // console.log(device);
@@ -54,6 +54,7 @@ const BluetoothDevice = (device) => {
     const deviceConnectButton = ConfigToggle({
         vpack: 'center',
         expandWidget: false,
+        desc: 'Toggle connection',
         initValue: device.connected,
         onChange: (self, newValue) => {
             device.setConnection(newValue);
@@ -66,6 +67,7 @@ const BluetoothDevice = (device) => {
         vpack: 'center',
         className: 'sidebar-bluetooth-device-remove',
         child: MaterialIcon('delete', 'norm'),
+        tooltipText: 'Remove device',
         setup: setupCursorHover,
         onClicked: () => execAsync(['bluetoothctl', 'remove', device.address]).catch(print),
     });
@@ -86,6 +88,24 @@ const BluetoothDevice = (device) => {
 }
 
 export default (props) => {
+    const emptyContent = Box({
+        homogeneous: true,
+        children: [Box({
+            vertical: true,
+            vpack: 'center',
+            className: 'txt spacing-v-10',
+            children: [
+                Box({
+                    vertical: true,
+                    className: 'spacing-v-5 txt-subtext',
+                    children: [
+                        MaterialIcon('bluetooth_disabled', 'gigantic'),
+                        Label({ label: 'No Bluetooth devices', className: 'txt-small' }),
+                    ]
+                }),
+            ]
+        })]
+    });
     const deviceList = Scrollable({
         vexpand: true,
         child: Box({
@@ -102,14 +122,22 @@ export default (props) => {
                 .hook(Bluetooth, self.attribute.updateDevices, 'device-removed')
             ,
         })
+    });
+    const mainContent = Stack({
+        children: {
+            'empty': emptyContent,
+            'list': deviceList,
+        },
+        setup: (self) => self.hook(Bluetooth, (self) => {
+            self.shown = (Bluetooth.devices.length > 0 ? 'list' : 'empty')
+        }),
     })
     return Box({
         ...props,
         className: 'spacing-v-5',
         vertical: true,
         children: [
-            deviceList,
-            // mainContent,
+            mainContent,
             // status,
         ]
     });
