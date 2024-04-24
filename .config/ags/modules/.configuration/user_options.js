@@ -13,7 +13,7 @@ let configOptions = {
         'keyboardUseFlag': false, // Use flag emoji instead of abbreviation letters
         'layerSmoke': false,
         'layerSmokeStrength': 0.2,
-        'fakeScreenRounding': true,
+        'fakeScreenRounding': false,
     },
     'apps': {
         'bluetooth': "blueberry",
@@ -31,7 +31,7 @@ let configOptions = {
         'warnMessages': ["Plug in the charger", "You there?", 'PLUG THE CHARGER ALREADY'],
     },
     'music': {
-        'preferredPlayer': "plasma-browser-integration",
+        'preferredPlayer': "playerctl",
     },
     'onScreenKeyboard': {
         'layout': "qwerty_full", // See modules/onscreenkeyboard/onscreenkeyboard.js for available layouts
@@ -69,9 +69,9 @@ let configOptions = {
         'shown': 10,
     },
     'dock': {
-        'enabled': false,
+        'enabled': true,
         'hiddenThickness': 5,
-        'pinnedApps': ['firefox', 'org.gnome.Nautilus'],
+        'pinnedApps': ['floorp', 'org.gnome.Nautilus', 'vesktop'],
         'layer': 'top',
         'monitorExclusivity': true, // Dock will move to other monitor along with focus if enabled
         'searchPinnedAppIcons': false, // Try to search for the correct icon if the app class isn't an icon name
@@ -80,11 +80,11 @@ let configOptions = {
         'autoHide': [
             {
                 'trigger': 'client-added',
-                'interval': 500,
+                'interval': 1000,
             },
             {
                 'trigger': 'client-removed',
-                'interval': 500,
+                'interval': 1000,
             },
         ],
     },
