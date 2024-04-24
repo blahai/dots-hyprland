@@ -384,12 +384,17 @@ $sidebar_chat_textboxareaColor: mix($onSurfaceVariant, $surfaceVariant, 40%);
 .sidebar-module-btn-arrow {
     @include full-rounding;
     @include icon-material;
-    background-color: $surfaceContainerHigh;
+    background-color: $layer2;
     min-width: 1.705rem;
     min-height: 1.705rem;
 
-    &:hover {
-        background-color: $hovercolor;
+    &:hover,
+    &:focus {
+        background-color: $layer2Hover;
+    }
+
+    &:active {
+        background-color: $layer2Active;
     }
 }
 
@@ -400,12 +405,13 @@ $sidebar_chat_textboxareaColor: mix($onSurfaceVariant, $surfaceVariant, 40%);
     min-width: 1.705rem;
     min-height: 1.705rem;
 
-    &:hover {
-        background-color: $hovercolor;
+    &:hover,
+    &:focus {
+        background-color: $layer1Hover;
     }
 
     &:active {
-        background-color: $activecolor;
+        background-color: $layer1Active;
     }
 }
 
@@ -571,7 +577,7 @@ $skeleton-accent: mix($secondary, $onSecondary, 50%);
     background-repeat: no-repeat;
     background: linear-gradient(to right, $layer3 0%, $skeleton-accent 25%, $layer3 50%, $layer3 100%);
     background-size: 500% 500%;
-    animation: sidebar-chat-message-skeletonline-anim 3s linear;
+    animation: sidebar-chat-message-skeletonline-anim 2s linear;
     animation-iteration-count: infinite;
 }
 
@@ -579,7 +585,7 @@ $skeleton-accent: mix($secondary, $onSecondary, 50%);
     background-repeat: no-repeat;
     background: linear-gradient(to right, $layer3 0%, $layer3 50%, $skeleton-accent 75%, $layer3 100%);
     background-size: 500% 500%;
-    animation: sidebar-chat-message-skeletonline-anim 3s linear;
+    animation: sidebar-chat-message-skeletonline-anim 2s linear;
     animation-iteration-count: infinite;
 }
 
@@ -588,7 +594,7 @@ $skeleton-accent: mix($secondary, $onSecondary, 50%);
     background-repeat: no-repeat;
     background: linear-gradient(to right, $layer3 0%, $layer3 25%, $skeleton-accent 50%, $layer3 75%, $layer3 100%);
     background-size: 500% 500%;
-    animation: sidebar-chat-message-skeletonline-anim 3s linear;
+    animation: sidebar-chat-message-skeletonline-anim 2s linear;
     animation-iteration-count: infinite;
 }
 
