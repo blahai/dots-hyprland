@@ -69,7 +69,7 @@ let configOptions = {
         'shown': 10,
     },
     'dock': {
-        'enabled': true,
+        'enabled': false,
         'hiddenThickness': 5,
         'pinnedApps': ['floorp', 'org.gnome.Nautilus', 'vesktop'],
         'layer': 'top',
