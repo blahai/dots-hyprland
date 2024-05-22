@@ -78,38 +78,68 @@ export const HyprToggleIcon = async (icon, name, hyprlandConfigValue, props = {}
     }
 }
 
-export const ModuleNightLight = (props = {}) => Widget.Button({
-    attribute: {
-        enabled: false,
-    },
-    className: 'txt-small sidebar-iconbutton',
-    tooltipText: 'Night Light',
-    onClicked: (self) => {
-        self.attribute.enabled = !self.attribute.enabled;
-        self.toggleClassName('sidebar-button-active', self.attribute.enabled);
-        if (self.attribute.enabled) Utils.execAsync('gammastep').catch(print)
-        else Utils.execAsync('pkill gammastep')
-            .then(() => {
-                // disable the button until fully terminated to avoid race
-                self.sensitive = false;
-                const source = setInterval(() => {
-                    Utils.execAsync('pkill -0 gammastep')
-                        .catch(() => {
-                            self.sensitive = true;
-                            source.destroy();
-                        });
-                }, 500);
-            })
-            .catch(print);
-    },
-    child: MaterialIcon('nightlight', 'norm'),
-    setup: (self) => {
-        setupCursorHover(self);
-        self.attribute.enabled = !!exec('pidof gammastep');
-        self.toggleClassName('sidebar-button-active', self.attribute.enabled);
-    },
-    ...props,
-});
+export const ModuleNightLight = async (props = {}) => {
+    if (!exec(`bash -c 'command -v gammastep'`)) return null;
+    return Widget.Button({
+        attribute: {
+            enabled: false,
+        },
+        className: 'txt-small sidebar-iconbutton',
+        tooltipText: 'Night Light',
+        onClicked: (self) => {
+            self.attribute.enabled = !self.attribute.enabled;
+            self.toggleClassName('sidebar-button-active', self.attribute.enabled);
+            if (self.attribute.enabled) Utils.execAsync('gammastep').catch(print)
+            else Utils.execAsync('pkill gammastep')
+                .then(() => {
+                    // disable the button until fully terminated to avoid race
+                    self.sensitive = false;
+                    const source = setInterval(() => {
+                        Utils.execAsync('pkill -0 gammastep')
+                            .catch(() => {
+                                self.sensitive = true;
+                                source.destroy();
+                            });
+                    }, 500);
+                })
+                .catch(print);
+        },
+        child: MaterialIcon('nightlight', 'norm'),
+        setup: (self) => {
+            setupCursorHover(self);
+            self.attribute.enabled = !!exec('pidof gammastep');
+            self.toggleClassName('sidebar-button-active', self.attribute.enabled);
+        },
+        ...props,
+    });
+}
+
+export const ModuleCloudflareWarp = async (props = {}) => {
+    if (!exec(`bash -c 'command -v warp-cli'`)) return null;
+    return Widget.Button({
+        attribute: {
+            enabled: false,
+        },
+        className: 'txt-small sidebar-iconbutton',
+        tooltipText: 'Cloudflare WARP',
+        onClicked: (self) => {
+            self.attribute.enabled = !self.attribute.enabled;
+            self.toggleClassName('sidebar-button-active', self.attribute.enabled);
+            if (self.attribute.enabled) Utils.execAsync('warp-cli connect').catch(print)
+            else Utils.execAsync('warp-cli disconnect').catch(print);
+        },
+        child: Widget.Icon({
+            icon: 'cloudflare-dns-symbolic',
+            className: 'txt-norm',
+        }),
+        setup: (self) => {
+            setupCursorHover(self);
+            self.attribute.enabled = !exec(`bash -c 'warp-cli status | grep Disconnected'`);
+            self.toggleClassName('sidebar-button-active', self.attribute.enabled);
+        },
+        ...props,
+    });
+}
 
 export const ModuleInvertColors = async (props = {}) => {
     try {
@@ -127,7 +157,7 @@ export const ModuleInvertColors = async (props = {}) => {
                             button.toggleClassName('sidebar-button-active', false);
                         }
                         else {
-                            Hyprland.messageAsync(`j/keyword decoration:screen_shader ${GLib.get_home_dir()}/.config/hypr/shaders/invert.frag`)
+                            Hyprland.messageAsync(`j/keyword decoration:screen_shader ${GLib.get_user_config_dir()}/hypr/shaders/invert.frag`)
                                 .catch(print);
                             button.toggleClassName('sidebar-button-active', true);
                         }

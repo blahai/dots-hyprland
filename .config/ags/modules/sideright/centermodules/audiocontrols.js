@@ -4,6 +4,7 @@ import Widget from 'resource:///com/github/Aylur/ags/widget.js';
 const { Box, Button, Icon, Label, Revealer, Scrollable, Slider, Stack } = Widget;
 import { MaterialIcon } from '../../.commonwidgets/materialicon.js';
 import { setupCursorHover } from '../../.widgetutils/cursorhover.js';
+import { iconExists } from '../../.miscutils/icons.js';
 
 const AppVolume = (stream) => Box({
     className: 'sidebar-volmixer-stream spacing-h-10',
@@ -66,10 +67,10 @@ const AudioDevices = (input = false) => {
         child: Box({
             className: 'txt spacing-h-10',
             children: [
-                Icon({
+                iconExists(stream.iconName) ? Icon({
                     className: 'txt-norm symbolic-icon',
                     icon: stream.iconName,
-                }),
+                }) : MaterialIcon(input ? 'mic_external_on' : 'media_output', 'norm'),
                 Label({
                     hexpand: true,
                     xalign: 0,
@@ -101,7 +102,7 @@ const AudioDevices = (input = false) => {
                     maxWidthChars: 10,
                     label: `${input ? '[In]' : '[Out]'}`,
                     setup: (self) => self.hook(Audio, (self) => {
-                        self.label = `${input ? '[In]' : '[Out]'} ${input ? Audio.microphone.description :  Audio.speaker.description}`;
+                        self.label = `${input ? '[In]' : '[Out]'} ${input ? Audio.microphone.description : Audio.speaker.description}`;
                     })
                 }),
                 Label({

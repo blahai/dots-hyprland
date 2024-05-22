@@ -19,31 +19,19 @@ const USER_CACHE_DIR = GLib.get_user_cache_dir();
 Utils.exec(`bash -c 'mkdir -p ${USER_CACHE_DIR}/ags/media/waifus'`);
 Utils.exec(`bash -c 'rm ${USER_CACHE_DIR}/ags/media/waifus/*'`);
 
-const TagButton = (command) => {
-    const plusSign = Revealer({
-        transition: 'slide_right',
-        revealChild: false,
-        className: 'margin-right-5',
-        child: Label({
-            label: '+',
-        })
-    });
-    return Button({
-        className: 'sidebar-chat-chip sidebar-chat-chip-action txt txt-small',
-        onClicked: () => { chatEntry.buffer.text += `${command} ` },
-        onHover: () => plusSign.revealChild = true,
-        onHoverLost: () => plusSign.revealChild = false,
-        setup: setupCursorHover,
-        child: Box({
-            children: [
-                plusSign,
-                Label({
-                    label: command,
-                }),
-            ]
-        })
-    });
-}
+const TagButton = (command) => Button({
+    className: 'sidebar-chat-chip sidebar-chat-chip-action txt txt-small',
+    onClicked: () => { chatEntry.buffer.text += `${command} ` },
+    setup: setupCursorHover,
+    label: command,
+});
+
+const CommandButton = (command, displayName = command) => Button({
+    className: 'sidebar-chat-chip sidebar-chat-chip-action txt txt-small',
+    onClicked: () => sendMessage(command),
+    setup: setupCursorHover,
+    label: displayName,
+});
 
 export const booruTabIcon = Box({
     hpack: 'center',
@@ -452,7 +440,8 @@ const booruTags = Revealer({
 export const booruCommands = Box({
     className: 'spacing-h-5',
     setup: (self) => {
-        self.pack_end(TagButton('/clear'), false, false, 0);
+        self.pack_end(CommandButton('/clear'), false, false, 0);
+        self.pack_end(CommandButton('/next'), false, false, 0);
         self.pack_start(Button({
             className: 'sidebar-chat-chip-toggle',
             setup: setupCursorHover,
@@ -501,6 +490,9 @@ export const sendMessage = (text) => {
             booruContent.add(message);
             booruContent.show_all();
             booruContent.attribute.map.set(Date.now(), message);
+        }
+        else if (text.startsWith('/next')) {
+            sendMessage('+')
         }
     }
     else BooruService.fetch(text);
