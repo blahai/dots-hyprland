@@ -53,6 +53,24 @@ const scripts = [
         command: `flatpak uninstall --unused`,
         enabled: hasFlatpak,
     },
+    {
+        icon: 'arch-symbolic',
+        name: 'Save replay',
+        command: 'killall -SIGUSR1 gpu-screen-recorder',
+        enabled: true,
+    },
+    {
+        icon: 'arch-symbolic',
+        name: 'Stop recording',
+        command: 'killall -SIGINT gpu-screen-recorder',
+        enabled: true,
+    },
+    {
+        icon: 'arch-symbolic',
+        name: 'Pause/resume recording',
+        command: 'killall -SIGUSR2 gpu-screen-recorder',
+        enabled: true,
+    },
 ];
 
 export default () => SidebarModule({
