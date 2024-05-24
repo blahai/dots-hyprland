@@ -5,6 +5,8 @@ const { Box, Button, CenterBox, Entry, EventBox, Icon, Label, Overlay, Revealer,
 const { execAsync, exec } = Utils;
 import { setupCursorHover, setupCursorHoverInfo } from '../.widgetutils/cursorhover.js';
 // APIs
+import GPTService from '../../services/gpt.js';
+import { chatGPTView, chatGPTCommands, sendMessage as chatGPTSendMessage, chatGPTTabIcon } from './apis/chatgpt.js';
 import { waifuView, waifuCommands, sendMessage as waifuSendMessage, waifuTabIcon } from './apis/waifu.js';
 import { booruView, booruCommands, sendMessage as booruSendMessage, booruTabIcon } from './apis/booru.js';
 import { enableClickthrough } from "../.widgetutils/clickthrough.js";
@@ -16,6 +18,14 @@ import { IconTabContainer } from '../.commonwidgets/tabcontainer.js';
 
 const EXPAND_INPUT_THRESHOLD = 30;
 const APIS = [
+    {
+        name: 'Assistant (llama)',
+        sendCommand: chatGPTSendMessage,
+        contentWidget: chatGPTView,
+        commandBar: chatGPTCommands,
+        tabIcon: chatGPTTabIcon,
+        placeholderText: 'Message the model...',
+    },
     {
         name: 'Waifus',
         sendCommand: waifuSendMessage,
