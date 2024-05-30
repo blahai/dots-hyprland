@@ -6,7 +6,8 @@ import App from 'resource:///com/github/Aylur/ags/app.js'
 import * as Utils from 'resource:///com/github/Aylur/ags/utils.js'
 // Stuff
 import userOptions from './modules/.configuration/user_options.js';
-import { firstRunWelcome } from './services/messages.js';
+import { firstRunWelcome, startBatteryWarningService } from './services/messages.js';
+import { startAutoDarkModeService } from './services/darkmode.js';
 // Widgets
 import { Bar, BarCornerTopleft, BarCornerTopright } from './modules/bar/main.js';
 import Cheatsheet from './modules/cheatsheet/main.js';
@@ -20,8 +21,8 @@ import Overview from './modules/overview/main.js';
 import Session from './modules/session/main.js';
 import SideLeft from './modules/sideleft/main.js';
 import SideRight from './modules/sideright/main.js';
+import { COMPILED_STYLE_DIR } from './init.js';
 
-const COMPILED_STYLE_DIR = `${GLib.get_user_cache_dir()}/ags/user/generated`
 const range = (length, start = 1) => Array.from({ length }, (_, i) => i + start);
 function forMonitors(widget) {
     const n = Gdk.Display.get_default()?.get_n_monitors() || 1;
@@ -32,18 +33,11 @@ function forMonitorsAsync(widget) {
     return range(n, 0).forEach((n) => widget(n).catch(print))
 }
 
-// SCSS compilation
-Utils.exec(`mkdir -p "${GLib.get_user_state_dir()}/ags/scss"`);
-Utils.exec(`bash -c 'echo "" > ${GLib.get_user_state_dir()}/ags/scss/_musicwal.scss'`); // reset music styles
-Utils.exec(`bash -c 'echo "" > ${GLib.get_user_state_dir()}/ags/scss/_musicmaterial.scss'`); // reset music styles
-async function applyStyle() {
-    Utils.exec(`mkdir -p ${COMPILED_STYLE_DIR}`);
-    Utils.exec(`sass -I "${GLib.get_user_state_dir()}/ags/scss" -I "${App.configDir}/scss/fallback" "${App.configDir}/scss/main.scss" "${COMPILED_STYLE_DIR}/style.css"`);
-    App.resetCss();
-    App.applyCss(`${COMPILED_STYLE_DIR}/style.css`);
-    console.log('[LOG] Styles loaded')
-}
-applyStyle().catch(print);
+// Start stuff
+handleStyles(true);
+startAutoDarkModeService().catch(print);
+firstRunWelcome().catch(print);
+startBatteryWarningService().catch(print)
 
 const Windows = () => [
     // forMonitors(DesktopBackground),

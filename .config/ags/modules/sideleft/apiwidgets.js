@@ -6,6 +6,8 @@ const { execAsync, exec } = Utils;
 import { setupCursorHover, setupCursorHoverInfo } from '../.widgetutils/cursorhover.js';
 // APIs
 import GPTService from '../../services/gpt.js';
+import Gemini from '../../services/gemini.js';
+import { geminiView, geminiCommands, sendMessage as geminiSendMessage, geminiTabIcon } from './apis/gemini.js';
 import { chatGPTView, chatGPTCommands, sendMessage as chatGPTSendMessage, chatGPTTabIcon } from './apis/chatgpt.js';
 import { waifuView, waifuCommands, sendMessage as waifuSendMessage, waifuTabIcon } from './apis/waifu.js';
 import { booruView, booruCommands, sendMessage as booruSendMessage, booruTabIcon } from './apis/booru.js';
@@ -17,16 +19,24 @@ import { widgetContent } from './sideleft.js';
 import { IconTabContainer } from '../.commonwidgets/tabcontainer.js';
 
 const EXPAND_INPUT_THRESHOLD = 30;
-const APIS = [
-    {
-        name: 'Assistant (llama)',
+const APILIST = {
+    'gpt': {
+        name: 'Assistant (GPTs)',
         sendCommand: chatGPTSendMessage,
         contentWidget: chatGPTView,
         commandBar: chatGPTCommands,
         tabIcon: chatGPTTabIcon,
         placeholderText: 'Message the model...',
     },
-    {
+    'gemini': {
+        name: 'Assistant (Gemini Pro)',
+        sendCommand: geminiSendMessage,
+        contentWidget: geminiView,
+        commandBar: geminiCommands,
+        tabIcon: geminiTabIcon,
+        placeholderText: 'Message Gemini...',
+    },
+    'waifu': {
         name: 'Waifus',
         sendCommand: waifuSendMessage,
         contentWidget: waifuView,
@@ -34,7 +44,7 @@ const APIS = [
         tabIcon: waifuTabIcon,
         placeholderText: 'Enter tags',
     },
-    {
+    'booru': {
         name: 'Booru',
         sendCommand: booruSendMessage,
         contentWidget: booruView,
@@ -42,7 +52,8 @@ const APIS = [
         tabIcon: booruTabIcon,
         placeholderText: 'Enter tags',
     },
-];
+}
+const APIS = userOptions.sidebar.pages.apis.order.map((apiName) => APILIST[apiName]);
 let currentApiId = 0;
 
 function apiSendMessage(textView) {
@@ -70,6 +81,14 @@ export const chatEntry = TextView({
                 self.grab_focus();
             }
         })
+        .hook(GPTService, (self) => {
+            if (APIS[currentApiId].name != 'Assistant (GPTs)') return;
+            self.placeholderText = (GPTService.key.length > 0 ? 'Message the model...' : 'Enter API Key...');
+        }, 'hasKey')
+        .hook(Gemini, (self) => {
+            if (APIS[currentApiId].name != 'Assistant (Gemini Pro)') return;
+            self.placeholderText = (Gemini.key.length > 0 ? 'Message Gemini...' : 'Enter Google AI API Key...');
+        }, 'hasKey')
         .on("key-press-event", (widget, event) => {
             // Don't send when Shift+Enter
             if (event.get_keyval()[1] === Gdk.KEY_Return) {

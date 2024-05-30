@@ -20,6 +20,11 @@ let configOptions = {
         'durationLarge': 180,
     },
     'appearance': {
+        'autoDarkMode': { // Turns on dark mode in certain hours. Time in 24h format
+            'enabled': false,
+            'from': "18:10",
+            'to': "6:10",
+        },
         'keyboardUseFlag': false, // Use flag emoji instead of abbreviation letters
         'layerSmoke': false,
         'layerSmokeStrength': 0.2,
@@ -79,6 +84,13 @@ let configOptions = {
             'batchCount': 20,
             'allowNsfw': false,
         },
+        'pages': {
+            'order': ["apis", "tools"],
+            'apis': {
+                'order': ["gemini", "gpt", "waifu", "booru"],
+            }
+        },
+
     },
     'search': {
         'engineBaseUrl': "https://www.google.com/search?q=",
@@ -127,7 +139,10 @@ let configOptions = {
         // are too many files in the search path it'll affect performance
         // Example: ['/usr/share/icons/Tela-nord/scalable/apps']
         'searchPaths': [''],
-
+        'symbolicIconTheme': {
+            "dark": "Adwaita",
+            "light": "Adwaita",
+        },
         substitutions: {
             'code-url-handler': "visual-studio-code",
             'Code': "visual-studio-code",
@@ -180,7 +195,7 @@ let configOptions = {
 let optionsOkay = true;
 function overrideConfigRecursive(userOverrides, configOptions = {}) {
     for (const [key, value] of Object.entries(userOverrides)) {
-        if (!configOptions[key]) optionsOkay = false;
+        if (configOptions[key] === undefined) optionsOkay = false;
         else if (typeof value === 'object') {
             overrideConfigRecursive(value, configOptions[key]);
         } else {
