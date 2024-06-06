@@ -7,10 +7,10 @@ import userOverrides from '../../user_options.js';
 let configOptions = {
     // General stuff
     'ai': {
-        'defaultGPTProvider': "ollama",
+        'defaultGPTProvider': "openai",
         'defaultTemperature': 0.9,
         'enhancements': true,
-        'useHistory': false,
+        'useHistory': true,
         'writingCursor': " ...", // Warning: Using weird characters can mess up Markdown rendering
         'proxyUrl': null, // Can be "socks5://127.0.0.1:9050" or "http://127.0.0.1:8080" for example. Leave it blank if you don't need it.
     },
@@ -28,7 +28,7 @@ let configOptions = {
         'keyboardUseFlag': false, // Use flag emoji instead of abbreviation letters
         'layerSmoke': false,
         'layerSmokeStrength': 0.2,
-        'fakeScreenRounding': false,
+        'fakeScreenRounding': 1, // 0: None | 1: Always | 2: When not fullscreen
     },
     'apps': {
         'bluetooth': "blueberry",
@@ -66,7 +66,7 @@ let configOptions = {
         'scaleMethod': "division", // Either "division" [default] or "gdk"
     },
     'music': {
-        'preferredPlayer': "playerctl",
+        'preferredPlayer': "plasma-browser-integration",
     },
     'onScreenKeyboard': {
         'layout': "qwerty_full", // See modules/onscreenkeyboard/onscreenkeyboard.js for available layouts
@@ -115,7 +115,7 @@ let configOptions = {
     'dock': {
         'enabled': false,
         'hiddenThickness': 5,
-        'pinnedApps': ['floorp', 'org.gnome.Nautilus', 'vesktop'],
+        'pinnedApps': ['firefox', 'org.gnome.Nautilus'],
         'layer': 'top',
         'monitorExclusivity': true, // Dock will move to other monitor along with focus if enabled
         'searchPinnedAppIcons': false, // Try to search for the correct icon if the app class isn't an icon name
@@ -124,11 +124,11 @@ let configOptions = {
         'autoHide': [
             {
                 'trigger': 'client-added',
-                'interval': 1000,
+                'interval': 500,
             },
             {
                 'trigger': 'client-removed',
-                'interval': 1000,
+                'interval': 500,
             },
         ],
     },
@@ -193,11 +193,15 @@ let configOptions = {
 
 // Override defaults with user's options
 let optionsOkay = true;
-function overrideConfigRecursive(userOverrides, configOptions = {}) {
+function overrideConfigRecursive(userOverrides, configOptions = {}, check = true) {
     for (const [key, value] of Object.entries(userOverrides)) {
-        if (configOptions[key] === undefined) optionsOkay = false;
-        else if (typeof value === 'object') {
-            overrideConfigRecursive(value, configOptions[key]);
+        if (configOptions[key] === undefined && check) {
+            optionsOkay = false;
+        }
+        else if (typeof value === 'object' && !(value instanceof Array)) {
+            if (key === "substitutions" || key === "regexSubstitutions") {
+                overrideConfigRecursive(value, configOptions[key], false);
+            } else overrideConfigRecursive(value, configOptions[key]);
         } else {
             configOptions[key] = value;
         }
