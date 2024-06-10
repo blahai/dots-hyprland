@@ -93,6 +93,14 @@ let configOptions = {
 
     },
     'search': {
+        'enableFeatures': {
+            'actions': true,
+            'commands': true,
+            'mathResults': true,
+            'directorySearch': true,
+            'aiSearch': true,
+            'webSearch': true,
+        },
         'engineBaseUrl': "https://www.google.com/search?q=",
         'excludedSites': ["quora.com"],
     },
@@ -185,8 +193,12 @@ let configOptions = {
             'prevTab': "Ctrl+Page_Up",
         },
         'cheatsheet': {
-            'nextTab': "Page_Down",
-            'prevTab': "Page_Up",
+            'keybinds': {
+                'nextTab': "Page_Down",
+                'prevTab': "Page_Up",
+            },
+            'nextTab': "Ctrl+Page_Down",
+            'prevTab': "Ctrl+Page_Up",
         }
     },
 }
