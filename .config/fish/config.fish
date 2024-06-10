@@ -1,25 +1,61 @@
-function fish_prompt -d "Write out the prompt"
-    # This shows up as USER@HOST /home/user/ >, with the directory colored
-    # $USER and $hostname are set by fish, so you can just use them
-    # instead of using `whoami` and `hostname`
-    printf '%s@%s %s%s%s > ' $USER $hostname \
-        (set_color $fish_color_cwd) (prompt_pwd) (set_color normal)
+set -x MANPAGER "nvim +Man!"
+
+function fish_greeting
+    echo The time is (set_color purple; date +%T; set_color purple)
+    fastfetch
 end
 
-if status is-interactive
-    # Commands to run in interactive sessions can go here
-    set fish_greeting
+set PATH $PATH /home/pingu/.local/bin /home/pingu/.cargo/bin/
 
-end
+export EDITOR="nvim"
+export YDOTOOL_SOCKET="$HOME/.ydotool_socket"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_MUSIC_DIR="$HOME/Music"
+export XDG_PICTURES_DIR="$HOME/Pictures"
 
+
+alias icat='kitty +kitten icat --align=left'
+
+alias py="python3"
+
+alias grep='rg -p'
+alias rg='rg -p'
+
+alias cp='cp -rv'
+
+alias :q='exit'
+alias ..='z ..'
+alias .2='z ../..'
+alias .3='z ../../..'
+alias .4='z ../../../..'
+alias .5='z ../../../../..'
+alias .r='z /'
+alias .h='z ~'
+alias .c='z ~/.config/'
+alias .a='z ~/.config/ags/'
+alias .d='z ~/Documents/'
+alias .C='z ~/Documents/code/'
+alias .D='z ~/Downloads/'
+alias .p='z ~/Pictures/'
+
+alias fetch="clear ; fastfetch --logo ~/Downloads/gay.png --logo-width 32"
+alias hvim="z ~/.config/hypr/ ; nvim ; z"
+alias fvim="nvim ~/.config/fish/config.fish"
+alias se="sudoedit"
+alias vim="nvim"
+alias nvide="env -u WAYLAND_DISPLAY neovide --multigrid"
+alias transcat="queercat -b -f 1 -v 0.45 -h 0.45"
+alias clock="tty-clock -s -C 5 -D -c -b"
+alias ls="eza -l -a --group-directories-first --icons"
+alias ilom="ssh -oHostKeyAlgorithms=+ssh-rsa root@192.168.0.201"
+alias gc="git clone"
+alias jdc="procyon-decompiler"
+alias scsh="~/.cargo/bin/watershot"
 starship init fish | source
+zoxide init fish | source
+atuin init fish | source
+
 if test -f ~/.cache/ags/user/generated/terminal/sequences.txt
     cat ~/.cache/ags/user/generated/terminal/sequences.txt
 end
-
-alias pamcan=pacman
-
-# function fish_prompt
-#   set_color cyan; echo (pwd)
-#   set_color green; echo '> '
-# end
