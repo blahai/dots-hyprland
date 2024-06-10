@@ -7,7 +7,7 @@ import userOverrides from '../../user_options.js';
 let configOptions = {
     // General stuff
     'ai': {
-        'defaultGPTProvider': "openai",
+        'defaultGPTProvider': "ollama",
         'defaultTemperature': 0.9,
         'enhancements': true,
         'useHistory': true,
@@ -82,12 +82,12 @@ let configOptions = {
         'image': {
             'columns': 2,
             'batchCount': 20,
-            'allowNsfw': false,
+            'allowNsfw': true,
         },
         'pages': {
             'order': ["apis", "tools"],
             'apis': {
-                'order': ["gemini", "gpt", "waifu", "booru"],
+                'order': ["gpt", "waifu", "booru"],
             }
         },
 
@@ -98,8 +98,8 @@ let configOptions = {
             'commands': true,
             'mathResults': true,
             'directorySearch': true,
-            'aiSearch': true,
-            'webSearch': true,
+            'aiSearch': false,
+            'webSearch': false,
         },
         'engineBaseUrl': "https://www.google.com/search?q=",
         'excludedSites': ["quora.com"],
@@ -123,7 +123,7 @@ let configOptions = {
     'dock': {
         'enabled': false,
         'hiddenThickness': 5,
-        'pinnedApps': ['firefox', 'org.gnome.Nautilus'],
+        'pinnedApps': ['floorp', 'org.gnome.Nautilus'],
         'layer': 'top',
         'monitorExclusivity': true, // Dock will move to other monitor along with focus if enabled
         'searchPinnedAppIcons': false, // Try to search for the correct icon if the app class isn't an icon name

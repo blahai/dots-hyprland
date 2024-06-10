@@ -8,7 +8,7 @@ const { execAsync, exec } = Utils;
 import { execAndClose, expandTilde, hasUnterminatedBackslash, couldBeMath, launchCustomCommand, ls } from './miscfunctions.js';
 import {
     CalculationResultButton, CustomCommandButton, DirectoryButton,
-    DesktopEntryButton, ExecuteCommandButton, SearchButton, NoResultButton,
+    DesktopEntryButton, ExecuteCommandButton, SearchButton,
 } from './searchbuttons.js';
 import { checkKeybind } from '../.widgetutils/keybind.js';
 
