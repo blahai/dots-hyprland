@@ -68,7 +68,7 @@ class BrightnessDdcService extends BrightnessServiceBase {
     constructor(busNum) {
         super();
         this._busNum = busNum;
-        Utils.execAsync(`ddcutil -b ${this._busNum} getvcp 10 --brief`)
+        Utils.execAsync(`ddcutil getvcp 10 --brief`)
             .then((out) => {
                 // only the last line is useful
                 out = out.split('\n');
@@ -83,7 +83,7 @@ class BrightnessDdcService extends BrightnessServiceBase {
     }
 
     setBrightnessCmd(percent) {
-        return `ddcutil -b ${this._busNum} setvcp 10 ${Math.round(percent * 100)}`;
+        return `ddcutil setvcp 10 ${Math.round(percent * 100)}`;
     }
 }
 
