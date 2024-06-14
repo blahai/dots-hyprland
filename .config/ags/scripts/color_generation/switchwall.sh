@@ -4,7 +4,10 @@ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 CONFIG_DIR="$XDG_CONFIG_HOME/ags"
 
 switch() {
-  if [[ "$1" =~ \.mp4$ ]]; then
+  if [ "$1" == '' ]; then
+    echo 'Aborted'
+    exit 0
+  elif [[ "$1" =~ \.mp4$ ]]; then
 	  pkill mpvpaper
     mpvpaper DP-1 -f -o "loop panscan=1.0" "$1"
     imgpath=${1%.*}.jpg
@@ -19,11 +22,6 @@ switch() {
 	cursorposy=$(bc <<< "scale=0; ($cursorposy - $screeny) * $scale / 1")
 	cursorposy_inverted=$((screensizey - cursorposy))
     
-	if [ "$imgpath" == '' ]; then
-		echo 'Aborted'
-		exit 0
-	fi 
-
 	# ags run-js "wallpaper.set('')"
 	# sleep 0.1 && ags run-js "wallpaper.set('${imgpath}')" &
 	swww img "$imgpath" --transition-step 100 --transition-fps 120 \
