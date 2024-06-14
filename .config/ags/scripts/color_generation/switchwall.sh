@@ -4,24 +4,31 @@ XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 CONFIG_DIR="$XDG_CONFIG_HOME/ags"
 
 switch() {
-	imgpath=$1
-	read scale screenx screeny screensizey < <(hyprctl monitors -j | jq '.[] | select(.focused) | .scale, .x, .y, .height' | xargs)
+  if [[ "$1" =~ \.mp4$ ]]; then
+	  pkill mpvpaper
+    mpvpaper DP-1 -f -o "loop panscan=1.0" "$1"
+    imgpath=${1%.*}.jpg
+	else
+    pkill mpvpaper
+	  imgpath=$1
+  fi
+  read scale screenx screeny screensizey < <(hyprctl monitors -j | jq '.[] | select(.focused) | .scale, .x, .y, .height' | xargs)
 	cursorposx=$(hyprctl cursorpos -j | gojq '.x' 2>/dev/null) || cursorposx=960
 	cursorposx=$(bc <<< "scale=0; ($cursorposx - $screenx) * $scale / 1")
 	cursorposy=$(hyprctl cursorpos -j | gojq '.y' 2>/dev/null) || cursorposy=540
 	cursorposy=$(bc <<< "scale=0; ($cursorposy - $screeny) * $scale / 1")
 	cursorposy_inverted=$((screensizey - cursorposy))
-
+    
 	if [ "$imgpath" == '' ]; then
 		echo 'Aborted'
 		exit 0
-	fi
+	fi 
 
 	# ags run-js "wallpaper.set('')"
 	# sleep 0.1 && ags run-js "wallpaper.set('${imgpath}')" &
 	swww img "$imgpath" --transition-step 100 --transition-fps 120 \
-		--transition-type grow --transition-angle 30 --transition-duration 1 \
-		--transition-pos "$cursorposx, $cursorposy_inverted"
+	  --transition-type grow --transition-angle 30 --transition-duration 1 \
+	  --transition-pos "$cursorposx, $cursorposy_inverted"
 }
 
 if [ "$1" == "--noswitch" ]; then
