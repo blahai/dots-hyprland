@@ -50,49 +50,26 @@ esac
 remove_bashcomments_emptylines ${DEPLISTFILE} ./cache/dependencies_stripped.conf
 readarray -t pkglist < ./cache/dependencies_stripped.conf
 
+# Use yay. Because paru do not support cleanbuild.
+# Also see https://wiki.hyprland.org/FAQ/#how-do-i-update
 if ! command -v yay >/dev/null 2>&1;then
-  if ! command -v paru >/dev/null 2>&1;then
-    echo -e "\e[33m[$0]: \"yay\" not found.\e[0m"
-    showfun install-yay
-    v install-yay
-    AUR_HELPER=yay
-  else
-    echo -e "\e[33m[$0]: \"yay\" not found, but \"paru\" found.\e[0m"
-    echo -e "\e[33mIt is not recommended to use \"paru\" as warned in Hyprland Wiki:\e[0m"
-    echo -e "\e[33m    \"If you are using the AUR (hyprland-git) package, you will need to cleanbuild to update the package. Paru has been problematic with updating before, use Yay.\"\e[0m"
-    echo -e "\e[33mReference: https://wiki.hyprland.org/FAQ/#how-do-i-update\e[0m"
-    if $ask;then
-      printf "Install \"yay\"?\n"
-      printf "  y = Yes, install \"yay\" for me first. (DEFAULT)\n"
-      printf "  n = No, use \"paru\" at my own risk.\n"
-      printf "  a = Abort.\n"
-      sleep 2
-      read -p "====> " p
-      case $p in
-        [Nn]) AUR_HELPER=paru;;
-        [Aa]) echo -e "\e[34mAlright, aborting...\e[0m";exit 1;;
-        *) v paru -S --needed --noconfirm yay-bin;
-           AUR_HELPER=yay;;
-      esac
-    else
-      AUR_HELPER=paru
-    fi
-  fi
-else AUR_HELPER=yay
+  echo -e "\e[33m[$0]: \"yay\" not found.\e[0m"
+  showfun install-yay
+  v install-yay
 fi
 
 # Install extra packages from dependencies.conf as declared by the user
 if (( ${#pkglist[@]} != 0 )); then
 	if $ask; then
 		# execute per element of the array $pkglist
-		for i in "${pkglist[@]}";do v $AUR_HELPER -S --needed $i;done
+		for i in "${pkglist[@]}";do v yay -S --needed $i;done
 	else
 		# execute for all elements of the array $pkglist in one line
-		v $AUR_HELPER -S --needed --noconfirm ${pkglist[*]}
+		v yay -S --needed --noconfirm ${pkglist[*]}
 	fi
 fi
 
-# Convert old dependencies to non explicit dependencies so that they can be orphaned if not in meta packages 
+# Convert old dependencies to non explicit dependencies so that they can be orphaned if not in meta packages
 set-explicit-to-implicit() {
 	remove_bashcomments_emptylines ./scriptdata/previous_dependencies.conf ./cache/old_deps_stripped.conf
 	readarray -t old_deps_list < ./cache/old_deps_stripped.conf
@@ -101,7 +78,7 @@ set-explicit-to-implicit() {
 
 	echo "Attempting to set previously explicitly installed deps as implicit..."
 	for i in "${explicitly_installed[@]}"; do for j in "${old_deps_list[@]}"; do
-		[ "$i" = "$j" ] && $AUR_HELPER -D --asdeps "$i"
+		[ "$i" = "$j" ] && yay -D --asdeps "$i"
 	done; done
 
 	return 0
@@ -118,16 +95,22 @@ install-local-pkgbuild() {
 	local installflags=$2
 
 	x pushd $location
-	
+
 	source ./PKGBUILD
-	x $AUR_HELPER -S $installflags --asdeps "${depends[@]}"
+	x yay -S $installflags --asdeps "${depends[@]}"
 	x makepkg -si --noconfirm
 
 	x popd
 }
 
 # Install core dependencies from the meta-packages
-metapkgs=(./arch-packages/illogical-impulse-{audio,backlight,basic,fonts-themes,gnome,gtk,microtex,portal,python,screencapture,widgets})
+metapkgs=(./arch-packages/illogical-impulse-{audio,backlight,basic,fonts-themes,gnome,gtk,portal,python,screencapture,widgets})
+metapkgs+=(./arch-packages/illogical-impulse-ags)
+metapkgs+=(./arch-packages/illogical-impulse-microtex-git)
+metapkgs+=(./arch-packages/illogical-impulse-oneui4-icons-git)
+[[ -f /usr/share/icons/Bibata-Modern-Classic/index.theme ]] || \
+  metapkgs+=(./arch-packages/illogical-impulse-bibata-modern-classic-bin)
+try sudo pacman -R illogical-impulse-microtex
 
 for i in "${metapkgs[@]}"; do
 	metainstallflags="--needed"
@@ -141,22 +124,22 @@ done
 case $SKIP_PYMYC_AUR in
   true) sleep 0;;
   *)
-	  pymycinstallflags="--clean"
-	  $ask && showfun install-local-pkgbuild || pymycinstallflags="$installflags --noconfirm"
+	  pymycinstallflags=""
+	  $ask && showfun install-local-pkgbuild || pymycinstallflags="$pymycinstallflags --noconfirm"
 	  v install-local-pkgbuild "./arch-packages/illogical-impulse-pymyc-aur" "$pymycinstallflags"
     ;;
 esac
 
 
-# https://github.com/end-4/dots-hyprland/issues/389#issuecomment-2040671585
+# Why need cleanbuild? see https://github.com/end-4/dots-hyprland/issues/389#issuecomment-2040671585
+# Why install deps by running a seperate command? see pinned comment of https://aur.archlinux.org/packages/hyprland-git
 case $SKIP_HYPR_AUR in
   true) sleep 0;;
   *)
-    if $ask;then
-      v $AUR_HELPER -S --answerclean=a hyprland-git
-    else
-      v $AUR_HELPER -S --answerclean=a --noconfirm hyprland-git
-    fi
+	  hyprland_installflags="-S"
+	  $ask || hyprland_installflags="$hyprland_installflags --noconfirm"
+    v yay $hyprland_installflags --asdeps hyprutils-git hyprlang-git hyprcursor-git hyprwayland-scanner-git
+    v yay $hyprland_installflags --answerclean=a hyprland-git
     ;;
 esac
 
@@ -184,63 +167,11 @@ esac
 v sudo usermod -aG video,i2c,input "$(whoami)"
 v bash -c "echo i2c-dev | sudo tee /etc/modules-load.d/i2c-dev.conf"
 v systemctl --user enable ydotool --now
+v gsettings set org.gnome.desktop.interface font-name 'Rubik 11'
 
 #####################################################################################
 printf "\e[36m[$0]: 2. Installing parts from source repo\e[0m\n"
 sleep 1
-
-case $SKIP_AGS in
-  true) sleep 0;;
-  *)
-    if command -v ags >/dev/null 2>&1;then
-      echo -e "\e[33m[$0]: Command \"ags\" already exists, no need to install.\e[0m"
-      echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
-      ask_ags=$ask
-    else ask_ags=true
-    fi
-    if $ask_ags;then showfun install-ags;v install-ags;fi
-    ;;
-esac
-
-if $(fc-list|grep -q Rubik); then
-  echo -e "\e[33m[$0]: Font \"Rubik\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
-  ask_Rubik=$ask
-else ask_Rubik=true
-fi
-if $ask_Rubik;then showfun install-Rubik;v install-Rubik;fi
-
-if $(fc-list|grep -q Gabarito); then
-  echo -e "\e[33m[$0]: Font \"Gabarito\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
-  ask_Gabarito=$ask
-else ask_Gabarito=true
-fi
-if $ask_Gabarito;then showfun install-Gabarito;v install-Gabarito;fi
-
-if $(test -d /usr/local/share/icons/OneUI); then
-  echo -e "\e[33m[$0]: Icon pack \"OneUI\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
-  ask_OneUI=$ask
-else ask_OneUI=true
-fi
-if $ask_OneUI;then showfun install-OneUI;v install-OneUI;fi
-
-if $(test -d /usr/local/share/icons/Bibata-Modern-Classic); then
-  echo -e "\e[33m[$0]: Cursor theme \"Bibata-Modern-Classic\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
-  ask_bibata=$ask
-else ask_bibata=true
-fi
-if $ask_bibata;then showfun install-bibata;v install-bibata;fi
-
-if command -v LaTeX >/dev/null 2>&1;then
-  echo -e "\e[33m[$0]: Program \"MicroTeX\" already exists, no need to install.\e[0m"
-  echo -e "\e[34mYou can reinstall it in order to update to the latest version anyway.\e[0m"
-  ask_MicroTeX=$ask
-else ask_MicroTeX=true
-fi
-if $ask_MicroTeX;then showfun install-MicroTeX;v install-MicroTeX;fi
 
 #####################################################################################
 printf "\e[36m[$0]: 3. Copying + Configuring\e[0m\n"
@@ -331,6 +262,25 @@ try hyprctl reload
 existed_zsh_conf=n
 grep -q 'source ${XDG_CONFIG_HOME:-~/.config}/zshrc.d/dots-hyprland.zsh' ~/.zshrc && existed_zsh_conf=y
 
+warn_files=()
+warn_files_tests=()
+warn_files_tests+=(/usr/local/bin/ags)
+warn_files_tests+=(/usr/local/etc/pam.d/ags)
+warn_files_tests+=(/usr/local/lib/{GUtils-1.0.typelib,Gvc-1.0.typelib,libgutils.so,libgvc.so})
+warn_files_tests+=(/usr/local/share/com.github.Aylur.ags)
+warn_files_tests+=(/usr/local/share/fonts/TTF/Rubik{,-Italic}'[wght]'.ttf)
+warn_files_tests+=(/usr/local/share/licenses/ttf-rubik)
+warn_files_tests+=(/usr/local/share/fonts/TTF/Gabarito-{Black,Bold,ExtraBold,Medium,Regular,SemiBold}.ttf)
+warn_files_tests+=(/usr/local/share/licenses/ttf-gabarito)
+warn_files_tests+=(/usr/local/share/icons/OneUI{,-dark,-light})
+warn_files_tests+=(/usr/local/share/icons/Bibata-Modern-Classic)
+warn_files_tests+=(/usr/local/bin/{LaTeX,res})
+for i in ${warn_files_tests[@]}; do
+  echo $i
+  test -f $i && warn_files+=($i)
+  test -d $i && warn_files+=($i)
+done
+
 #####################################################################################
 printf "\e[36m[$0]: Finished. See the \"Import Manually\" folder and grab anything you need.\e[0m\n"
 printf "\n"
@@ -352,3 +302,7 @@ case $existed_hypr_conf in
      printf "\e[33mPlease use \"$XDG_CONFIG_HOME/hypr/hyprland.conf.new\" as a reference for a proper format.\e[0m\n"
      printf "\e[33mIf this is your first time installation, you must overwrite \"$XDG_CONFIG_HOME/hypr/hyprland.conf\" with \"$XDG_CONFIG_HOME/hypr/hyprland.conf.new\".\e[0m\n"
 ;;esac
+
+if [[ ! -z "${warn_files[@]}" ]]; then
+  printf "\n\e[31m[$0]: \!! Important \!! : Please delete \e[0m ${warn_files[*]} \e[31m manually as soon as possible, since we\'re now using AUR package or local PKGBUILD to install them for Arch(based) Linux distros, and they'll take precedence over our installation, or at least take up more space.\e[0m\n"
+fi

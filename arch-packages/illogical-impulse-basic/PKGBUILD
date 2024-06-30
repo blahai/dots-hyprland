@@ -15,11 +15,10 @@ depends=(
 	rsync
 	wget
 	ripgrep
-	gojq
+	jq
 	npm
 	meson
 	typescript
 	gjs
 	xdg-user-dirs
 )
-
