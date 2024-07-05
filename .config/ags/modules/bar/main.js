@@ -14,11 +14,7 @@ const NormalOptionalWorkspaces = async () => {
     try {
         return (await import('./normal/workspaces_hyprland.js')).default();
     } catch {
-        try {
-            return (await import('./normal/workspaces_sway.js')).default();
-        } catch {
-            return null;
-        }
+        return null;
     }
 };
 
@@ -26,11 +22,7 @@ const FocusOptionalWorkspaces = async () => {
     try {
         return (await import('./focus/workspaces_hyprland.js')).default();
     } catch {
-        try {
-            return (await import('./focus/workspaces_sway.js')).default();
-        } catch {
-            return null;
-        }
+        return null;
     }
 };
 
