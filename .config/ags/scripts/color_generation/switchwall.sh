@@ -2,6 +2,7 @@
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 CONFIG_DIR="$XDG_CONFIG_HOME/ags"
+CURRENT="$HOME/Pictures/wallpapers/videos/current"
 
 switch() {
   if [ "$1" == '' ]; then
@@ -10,9 +11,13 @@ switch() {
   elif [[ "$1" =~ \.mp4$ ]]; then
 	  pkill mpvpaper
     mpvpaper DP-1 -f -o "loop panscan=1.0" "$1"
+    ln -s "$1" "$CURRENT"
     imgpath=${1%.*}.jpg
 	else
     pkill mpvpaper
+    if [ -f "$CURRENT" ]; then
+      rm $CURRENT
+    fi
 	  imgpath=$1
   fi
   read scale screenx screeny screensizey < <(hyprctl monitors -j | jq '.[] | select(.focused) | .scale, .x, .y, .height' | xargs)
