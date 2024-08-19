@@ -28,6 +28,7 @@ let configOptions = {
         'keyboardUseFlag': false, // Use flag emoji instead of abbreviation letters
         'layerSmoke': false,
         'layerSmokeStrength': 0.2,
+        'barRoundedCorners': 1,
         'fakeScreenRounding': 1, // 0: None | 1: Always | 2: When not fullscreen
     },
     'apps': {
@@ -219,7 +220,13 @@ let configOptions = {
             'prevTab': "Ctrl+Page_Up",
             'cycleTab': "Ctrl+Tab",
         }
-    },
+        },
+        'bar': {
+        // Array of bar modes for each monitor. Hit Ctrl+Alt+Slash to cycle.
+        // Modes: "normal", "focus" (workspace indicator only), "nothing"
+        // Example for four monitors: ["normal", "focus", "normal", "nothing"]
+        'modes': ["normal"]
+        },
 }
 
 // Override defaults with user's options
