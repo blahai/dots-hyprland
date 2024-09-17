@@ -11,6 +11,7 @@ switch() {
   elif [[ "$1" =~ \.mp4$ ]]; then
 	  pkill mpvpaper
     mpvpaper DP-1 -f -o "loop panscan=1.0" "$1"
+    rm $CURRENT
     ln -s "$1" "$CURRENT"
     imgpath=${1%.*}.jpg
 	else
